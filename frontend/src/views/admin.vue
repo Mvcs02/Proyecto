@@ -5,7 +5,13 @@
         <button class="btn btn-primary shadow-sm mb-2" @click="openRouteDialog">
           <i class="bi bi-plus-lg me-2"></i>Agregar Ruta
         </button>
+        <button class="btn btn-success" @click="ReadRoute">
+          <i class="bi bi-save me-2"></i>Ver Rutas
+        </button>
       </div>
+  
+      <!-- Mapa principal (visible al cargar la página) -->
+      <div id="mainMap" class="map-container shadow-sm mb-4" style="height: 500px;"></div>
   
       <!-- Modal de agregar ruta -->
       <dialog id="routeDialog" class="route-dialog animate__animated animate__fadeIn">
@@ -13,7 +19,7 @@
           <h3 class="mb-0">Agregar Nueva Ruta</h3>
           <button class="btn-close" @click="closeRouteDialog" aria-label="Cerrar"></button>
         </div>
-        
+  
         <div class="dialog-body">
           <div class="form-group mb-4">
             <label for="rutaNombre" class="form-label">Nombre de la Ruta:</label>
@@ -26,8 +32,8 @@
             />
           </div>
   
-          <!-- Mapa -->
-          <div id="mapRoute" class="map-container shadow-sm mb-4"></div>
+          <!-- Mapa en el Modal (solo se inicializa cuando se abre el modal) -->
+          <div id="modalMap" class="map-container shadow-sm mb-4" style="height: 400px;"></div>
   
           <div class="dialog-buttons">
             <button class="btn btn-outline-secondary" @click="closeRouteDialog">
@@ -57,17 +63,20 @@
     data() {
       return {
         rutaNombre: '',
-        mapRoute: null,
+        mainMap: null,   // Mapa principal
+        modalMap: null,  // Mapa dentro del modal
         drawnItems: null,
         drawControl: null,
       };
     },
     methods: {
+      // Al abrir el modal, inicializamos el mapa del modal
       openRouteDialog() {
         const dialog = document.getElementById("routeDialog");
         dialog.showModal();
-        this.initRouteMap();
+        this.initModalMap();  // Inicializamos el mapa solo en el modal
       },
+  
       closeRouteDialog() {
         const dialog = document.getElementById("routeDialog");
         dialog.classList.add('animate__fadeOut');
@@ -77,25 +86,48 @@
           this.clearRoute();
         }, 300);
       },
-      initRouteMap() {
-        if (this.mapRoute) {
-          this.mapRoute.invalidateSize();
+  
+      // Inicializamos el mapa principal cuando se carga la página
+      initMainMap() {
+        if (this.mainMap) {
+          this.mainMap.invalidateSize();
           return;
         }
   
-        this.mapRoute = L.map('mapRoute', {
+        this.mainMap = L.map('mainMap', {
           center: [17.9869, -92.9303],
           zoom: 12,
           zoomControl: true,
         });
   
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd',
           maxZoom: 19,
-        }).addTo(this.mapRoute);
+        }).addTo(this.mainMap);
+      },
+  
+      // Inicializamos el mapa dentro del modal cuando se abre
+      initModalMap() {
+        if (this.modalMap) {
+          this.modalMap.invalidateSize();
+          return;
+        }
+  
+        this.modalMap = L.map('modalMap', {
+          center: [17.9869, -92.9303],
+          zoom: 12,
+          zoomControl: true,
+        });
+  
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd',
+          maxZoom: 19,
+        }).addTo(this.modalMap);
   
         this.drawnItems = new L.FeatureGroup();
-        this.mapRoute.addLayer(this.drawnItems);
+        this.modalMap.addLayer(this.drawnItems);
   
         this.drawControl = new L.Control.Draw({
           position: 'topleft',
@@ -119,12 +151,13 @@
           },
         });
   
-        this.mapRoute.addControl(this.drawControl);
+        this.modalMap.addControl(this.drawControl);
   
-        this.mapRoute.on(L.Draw.Event.CREATED, (e) => {
+        this.modalMap.on(L.Draw.Event.CREATED, (e) => {
           this.drawnItems.addLayer(e.layer);
         });
       },
+  
       saveRoute() {
         if (!this.rutaNombre.trim()) {
           alert('Por favor, ingresa un nombre para la ruta.');
@@ -148,26 +181,50 @@
         const newRoute = { name: this.rutaNombre, coordinates };
         this.saveRouteToBackend(newRoute);
       },
+  
       async saveRouteToBackend(route) {
-      try {
-        // Enviar los datos al backend
-        const response = await axios.post('http://localhost:3000/api/registerroute', route);
-        console.log('Ruta guardada:', response.data);
-        alert('¡Ruta guardada con éxito!');
-        this.rutaNombre = '';
-        this.drawnItems.clearLayers();
-        this.closeRouteDialog();
-      } catch (error) {
-        console.error('Error al guardar la ruta:', error);
-        alert('Hubo un error al guardar la ruta. Intenta nuevamente.');
-      }
+        try {
+          // Enviar los datos al backend
+          const response = await axios.post('http://localhost:3000/api/registerroute', route);
+          console.log('Ruta guardada:', response.data);
+          alert('¡Ruta guardada con éxito!');
+          this.rutaNombre = '';
+          this.drawnItems.clearLayers();
+          this.closeRouteDialog();
+        } catch (error) {
+          console.error('Error al guardar la ruta:', error);
+          alert('Hubo un error al guardar la ruta. Intenta nuevamente.');
+        }
+      },
+  
+      clearRoute() {
+        this.drawnItems?.clearLayers();
+      },
+  
+      // Función para leer las rutas y mostrarlas en el mapa principal
+      async ReadRoute() {
+        try {
+          const response = await axios.get('http://localhost:3000/api/getroutes');
+          const routes = response.data;
+  
+          routes.forEach((route) => {
+            const latlngs = route.coordinates.map(coord => [coord.lat, coord.lng]);
+            const polyline = L.polyline(latlngs, { color: 'blue', weight: 4 }).addTo(this.mainMap);
+          });
+        } catch (error) {
+          console.error('Error al obtener las rutas:', error);
+          alert('Hubo un error al obtener las rutas.');
+        }
+      },
     },
-    clearRoute() {
-      this.drawnItems?.clearLayers();
+  
+    mounted() {
+      this.initMainMap();  // Inicializamos el mapa principal cuando la página carga
     },
-  },
-});
+  });
   </script>
+  
+  
   
   <style scoped>
   /* Contenedor principal */

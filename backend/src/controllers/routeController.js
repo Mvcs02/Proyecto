@@ -1,12 +1,10 @@
-const db = require('../config/dbConfig.js'); // Asegúrate de que la ruta sea correcta
+const db = require('../config/dbConfig.js');
 
 const registerRoute = (req, res) => {
   const { name, coordinates } = req.body;
 
-  // Convertir las coordenadas a string usando JSON.stringify
   const coordinatesString = JSON.stringify(coordinates);
 
-  // Usamos un query parametrizado para evitar problemas de inyección SQL
   const query = `
     INSERT INTO rutas (nombre, coordenadas)
     VALUES (?, ?)
@@ -26,4 +24,21 @@ const registerRoute = (req, res) => {
   });
 };
 
-module.exports = { registerRoute };
+const getRoutes = (req, res) => {
+  const query = `SELECT * FROM rutas`;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener rutas:', err);
+      return res.status(500).json({ success: false, message: 'Error al obtener las rutas' });
+    }
+
+    res.status(200).json({
+      success: true,
+      routes: results
+    });
+  });
+};
+
+// 🔥 ESTA ES LA FORMA CORRECTA 🔥
+module.exports = { registerRoute, getRoutes };
