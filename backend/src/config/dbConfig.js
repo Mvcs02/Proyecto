@@ -3,10 +3,15 @@ const mysql = require('mysql2');
 
 // Crear la conexión a la base de datos
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'iokliokl',
-  database: 'combis'
+  user: 'combisql',
+  password: '123456789',
+  server: 'localhost',
+  database: 'combi2',
+  options: {
+    trustServerCertificate: true,
+    enableArithAbort: true,
+    trustedConnection: false
+  }
 });
 
 connection.connect((err) => {
