@@ -8,8 +8,8 @@ const registerRoute = (req, res) => {
 
   // Usamos un query parametrizado para evitar problemas de inyección SQL
   const query = `
-    INSERT INTO routes (name, coordinates, active)
-    VALUES (?, ?, 1)
+    INSERT INTO rutas (nombre, coordenadas)
+    VALUES (?, ?)
   `;
 
   db.query(query, [name, coordinatesString], (err, results) => {

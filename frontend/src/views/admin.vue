@@ -170,68 +170,174 @@
   </script>
   
   <style scoped>
+  /* Contenedor principal */
+  .container {
+    min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(to bottom right, #42a5f5, #66bb6a);
+    font-family: 'Poppins', sans-serif;
+    padding: 2rem;
+  }
+  
+  /* Botones de acción principales */
+  .d-flex {
+    gap: 15px;
+  }
+  
+  .btn-primary {
+    padding: 12px 25px;
+    border-radius: 25px;
+    border: none;
+    background-color: #64b5f6;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: transform 0.2s, box-shadow 0.3s;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn-primary:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Diálogo de ruta */
   .route-dialog {
     width: 90%;
     max-width: 900px;
     border: none;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    background: #fff;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     overflow: hidden;
   }
   
+  /* Encabezado del diálogo */
   .dialog-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 2rem;
-    border-bottom: 1px solid #eee;
+    background: linear-gradient(to right, #42a5f5, #66bb6a);
+    color: white;
   }
   
+  .dialog-header h3 {
+    font-size: 1.8rem;
+    margin: 0;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  .btn-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .btn-close:hover {
+    transform: scale(1.2);
+  }
+  
+  /* Cuerpo del diálogo */
   .dialog-body {
     padding: 2rem;
   }
   
-  .map-container {
-    width: 100%;
-    height: 450px;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-  }
-  
-  .dialog-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-  }
-  
-  .btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-  }
-  
-  .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .form-control {
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
+  /* Grupo de formulario */
+  .form-group {
+    margin-bottom: 1.5rem;
   }
   
   .form-label {
+    font-size: 1.2rem;
+    color: #42a5f5;
     font-weight: 500;
     margin-bottom: 0.5rem;
+    display: block;
   }
   
-  /* Leaflet override */
+  .form-control {
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 2px solid #64b5f6;
+    font-size: 1.1rem;
+    transition: border-color 0.3s;
+  }
+  
+  .form-control:focus {
+    border-color: #66bb6a;
+    outline: none;
+    box-shadow: 0 0 8px rgba(102, 187, 106, 0.3);
+  }
+  
+  /* Contenedor del mapa */
+  .map-container {
+    width: 100%;
+    height: 450px;
+    border-radius: 15px;
+    border: 2px solid #64b5f6;
+    background: #f0f4f8;
+  }
+  
+  /* Botones del diálogo */
+  .dialog-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+  }
+  
+  .btn-outline-secondary {
+    padding: 12px 25px;
+    border-radius: 25px;
+    border: 2px solid #64b5f6;
+    background: transparent;
+    color: #64b5f6;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+  
+  .btn-danger {
+    padding: 12px 25px;
+    border-radius: 25px;
+    border: none;
+    background-color: #ffb74d;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+  
+  .btn-success {
+    padding: 12px 25px;
+    border-radius: 25px;
+    border: none;
+    background-color: #81c784;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+  
+  .btn-outline-secondary:hover,
+  .btn-danger:hover,
+  .btn-success:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Overrides de Leaflet */
   .leaflet-container {
-    background: #f8f9fa;
+    background: #f0f4f8;
   }
   
   .leaflet-control-draw {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
   </style>
