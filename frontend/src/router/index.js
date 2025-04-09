@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Register from '../views/register.vue'
 import Login from '../views/login.vue'
 import Pasajero from '../views/pasajero.vue'
+import admin from '../views/admin.vue' // Importa el componente del administrador
 
 // La ruta base se define sin "name" para que App.vue muestre el welcome.
 const routes = [
@@ -25,6 +26,11 @@ const routes = [
     path: '/pasajero',
     name: 'pasajero',
     component: Pasajero
+  },
+  {
+    path: '/admin',  // Ruta para administrador
+    name: 'admin',
+    component: admin  // Componente que renderiza la vista del administrador
   }
 ]
 
