@@ -39,6 +39,19 @@
         <label for="rfc">RFC</label>
         <input v-model="form.rfc" type="text" placeholder="RFC" required />
       </div>
+      <!-- Campos para datos de login -->
+      <div class="form-group">
+        <label for="username">Nombre de Usuario</label>
+        <input v-model="form.username" type="text" placeholder="Nombre de Usuario" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input v-model="form.password" type="password" placeholder="Contraseña" required />
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar Contraseña</label>
+        <input v-model="form.confirmPassword" type="password" placeholder="Confirmar Contraseña" required />
+      </div>
       <button type="submit">Registrar</button>
     </form>
     <p v-if="message" :class="messageClass">{{ message }}</p>
@@ -64,6 +77,9 @@ export default {
         fecha_nac: '',
         curp: '',
         rfc: '',
+        username: '',
+        password: '',
+        confirmPassword: ''
       },
       message: '',
       messageClass: '',
@@ -91,6 +107,9 @@ export default {
     },
     goToLogin() {
       this.$router.push({ name: 'login' });
+    },
+    goToHome() {
+      this.$router.push({ name: 'home' });
     }
   }
 };

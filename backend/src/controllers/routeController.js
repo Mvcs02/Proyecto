@@ -6,8 +6,8 @@ const registerRoute = (req, res) => {
   const coordinatesString = JSON.stringify(coordinates);  
 
   const query = `
-    INSERT INTO routes (name, coordinates, active)
-    VALUES (?, ?, 1)
+    INSERT INTO rutas (nombre, coordenadas)
+    VALUES (?, ?)
   `;
 
   db.query(query, [name, coordinatesString], (err, results) => {
