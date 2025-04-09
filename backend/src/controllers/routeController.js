@@ -3,8 +3,10 @@ const db = require('../config/dbConfig.js'); // Asegúrate de que la ruta sea co
 const registerRoute = (req, res) => {
   const { name, coordinates } = req.body;
 
-  const coordinatesString = JSON.stringify(coordinates);  
+  // Convertir las coordenadas a string usando JSON.stringify
+  const coordinatesString = JSON.stringify(coordinates);
 
+  // Usamos un query parametrizado para evitar problemas de inyección SQL
   const query = `
     INSERT INTO rutas (nombre, coordenadas)
     VALUES (?, ?)
