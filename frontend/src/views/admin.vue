@@ -202,20 +202,18 @@
       },
   
       // Función para leer las rutas y mostrarlas en el mapa principal
-      async ReadRoute() {
-        try {
-          const response = await axios.get('http://localhost:3000/api/getroutes');
-          const routes = response.data;
-  
-          routes.forEach((route) => {
-            const latlngs = route.coordinates.map(coord => [coord.lat, coord.lng]);
-            const polyline = L.polyline(latlngs, { color: 'blue', weight: 4 }).addTo(this.mainMap);
-          });
-        } catch (error) {
-          console.error('Error al obtener las rutas:', error);
-          alert('Hubo un error al obtener las rutas.');
-        }
-      },
+      ReadRoute() {
+  axios.get('http://localhost:3000/api/getroutes')
+    .then(response => {
+      this.routes = response.data.routes;  // ⬅️ agarramos el array
+      this.routes.forEach(route => {
+        console.log(route);
+      });
+    })
+    .catch(error => {
+      console.error('Error al obtener las rutas:', error);
+    });
+},
     },
   
     mounted() {
