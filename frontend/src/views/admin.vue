@@ -184,7 +184,6 @@
   
       async saveRouteToBackend(route) {
         try {
-          // Enviar los datos al backend
           const response = await axios.post('http://localhost:3000/api/registerroute', route);
           console.log('Ruta guardada:', response.data);
           alert('¡Ruta guardada con éxito!');
@@ -201,11 +200,17 @@
         this.drawnItems?.clearLayers();
       },
   
-      // Función para leer las rutas y mostrarlas en el mapa principal
       ReadRoute() {
   axios.get('http://localhost:3000/api/getroutes')
     .then(response => {
-      this.routes = response.data.routes;  // ⬅️ agarramos el array
+      let routes = response.data.routes;
+
+      if (!Array.isArray(routes)) {
+        routes = [routes]; // Si no es array, lo convierto en array
+      }
+
+      this.routes = routes;
+
       this.routes.forEach(route => {
         console.log(route);
       });
@@ -213,7 +218,7 @@
     .catch(error => {
       console.error('Error al obtener las rutas:', error);
     });
-},
+}
     },
   
     mounted() {
