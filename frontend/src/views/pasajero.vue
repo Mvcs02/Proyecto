@@ -4,7 +4,7 @@
     <p>Contenido de la vista pasajero.</p>
     <div id="map" class="map"></div>
     <button @click="generarSimulacion" class="simular-btn">Generar Simulación</button>
-  </div>
+  </div><p>pene</p>
 </template>
 
 <script>
