@@ -67,6 +67,7 @@
         modalMap: null,  // Mapa dentro del modal
         drawnItems: null,
         drawControl: null,
+        routes: [],      // Rutas obtenidas
       };
     },
     methods: {
@@ -201,32 +202,47 @@
       },
   
       ReadRoute() {
-  axios.get('http://localhost:3000/api/getroutes')
-    .then(response => {
-      let routes = response.data.routes;
+        axios.get('http://localhost:3000/api/getroutes')
+          .then(response => {
+            let routes = response.data.routes;
+    
+            if (!Array.isArray(routes)) {
+              routes = [routes];
+            }
+    
+            // Parseamos las coordenadas y las corregimos
+            this.routes = routes.map(route => {
+              return {
+                ...route,
+                coordenadas: JSON.parse(route.coordenadas)[0] // Aquí accedemos al primer array dentro del array principal
+              };
+            });
+    
+            // Ahora accedes a las coordenadas directamente
+            this.routes.forEach(route => {
+              console.log(route.coordenadas);  // Esto ya debería darte el array de coordenadas
+            });
+    
+            this.drawRoutes(); // Dibuja las rutas en el mapa principal
+          })
+          .catch(error => {
+            console.error('Error al obtener las rutas:', error);
+          });
+      },
 
-      if (!Array.isArray(routes)) {
-        routes = [routes];
+      drawRoutes() {
+        // Itera sobre las rutas obtenidas
+        this.routes.forEach(route => {
+          // Suponiendo que route.coordenadas es un arreglo de objetos {lat, lng}
+          const latlngs = route.coordenadas.map(point => [point.lat, point.lng]);
+          // Crea la polilínea en color rojo
+          const polyline = L.polyline(latlngs, { color: 'red', weight: 4, opacity: 0.8 });
+          // Agrega la polilínea al mapa principal
+          polyline.addTo(this.mainMap);
+          // Ajusta el mapa para mostrar la ruta
+          this.mainMap.fitBounds(polyline.getBounds());
+        });
       }
-
-      // Parseamos las coordenadas y las corregimos
-      this.routes = routes.map(route => {
-        return {
-          ...route,
-          coordenadas: JSON.parse(route.coordenadas)[0] // Aquí accedemos al primer array dentro del array principal
-        };
-      });
-
-      // Ahora accedes a las coordenadas directamente
-      this.routes.forEach(route => {
-        console.log(route.coordenadas);  // Esto ya debería darte el array de coordenadas
-      });
-    })
-    .catch(error => {
-      console.error('Error al obtener las rutas:', error);
-    });
-}
-
     },
   
     mounted() {
