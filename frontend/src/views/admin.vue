@@ -206,25 +206,27 @@
       let routes = response.data.routes;
 
       if (!Array.isArray(routes)) {
-        routes = [routes]; // Si no es array, lo hago array
+        routes = [routes];
       }
 
-      // Ahora parseo las coordenadas que vienen como texto
+      // Parseamos las coordenadas y las corregimos
       this.routes = routes.map(route => {
         return {
           ...route,
-          coordenadas: JSON.parse(route.coordenadas)
+          coordenadas: JSON.parse(route.coordenadas)[0] // Aquí accedemos al primer array dentro del array principal
         };
       });
 
+      // Ahora accedes a las coordenadas directamente
       this.routes.forEach(route => {
-        console.log(route);
+        console.log(route.coordenadas);  // Esto ya debería darte el array de coordenadas
       });
     })
     .catch(error => {
       console.error('Error al obtener las rutas:', error);
     });
 }
+
     },
   
     mounted() {
